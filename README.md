@@ -6,13 +6,13 @@
 
 ##目前已有資料
 
-9_president.json   第九屆總統大選得票資料 - 1992
-10_president.json  第十屆總統大選得票資料 - 1996
-11_president.json  第十一屆總統大選得票資料 - 2000
+- 9_president.json   第九屆總統大選得票資料 - 1992
+- 10_president.json  第十屆總統大選得票資料 - 1996
+- 11_president.json  第十一屆總統大選得票資料 - 2000
 
 #尚待處理
 
-13_president.json  第十三屆總統大選得票資料 - 2012
+- 13_president.json  第十三屆總統大選得票資料 - 2012
 
 
 #備註
