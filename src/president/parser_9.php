@@ -1,6 +1,6 @@
 <?php
 
-$filename = '../raw/9th_president_vote.csv';
+$filename = '../../raw/9th_president_vote.csv';
 $fp = fopen($filename,'r');
 
 
@@ -22,23 +22,22 @@ while(!feof($fp))
 
 	$data['投票狀況'][$cols[0]][$cols[1]][$cols[2]][] = array(
 		'票所'=>$cols[3],
-		'得票數'=>array($cols[4],$cols[6],$cols[8],$cols[10]),
-		'得票率'=>array($cols[5],$cols[7],$cols[9],$cols[11]),
-		'有效票'=>$cols[12],
-		'無效票'=>$cols[13],
-		'投票'=>$cols[14],
-		'已領未投投票'=>$cols[15],
-		'選舉人數'=>$cols[16],
-		'投票率'=>$cols[17]);
+		'得票數'=>array(intval($cols[4]),intval($cols[6]),intval($cols[8]),intval($cols[10])),
+		'得票率'=>array(floatval($cols[5]),floatval($cols[7]),floatval($cols[9]),floatval($cols[11])),
+		'有效票'=>intval($cols[12]),
+		'無效票'=>intval($cols[13]),
+		'投票'=>intval($cols[14]),
+		'已領未投票數'=>intval($cols[15]),
+		'選舉人數'=>intval($cols[16]),
+		'投票率'=>intval($cols[17]));
 }
 
-echo count($data['投票結果']);
 
 $json = json_encode($data);
 
 fclose($fp);
 
-$fp = fopen('../9_president.json','w+');
+$fp = fopen('../../9_president.json','w+');
 fprintf($fp,"%s",$json);
 fclose($fp);
 
