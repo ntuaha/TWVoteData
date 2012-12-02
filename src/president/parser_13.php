@@ -24,19 +24,18 @@ if($handle = opendir($folder))
 {
 	while (false !== ($entry = readdir($handle)))
 	{
-        if ($entry != "." && $entry != "..") 
-        {
-            
-            parserExecl($objReader,$data,$folder,$entry);
-            //break;
-        }
-    }
-    closedir($handle);
+		if ($entry != "." && $entry != "..") 
+		{
+			parserExecl($objReader,$data,$folder,$entry);
+         
+		}
+	}
+	closedir($handle);
 }
-//print_r($data);
 //清空記憶體
 unset($objReader);
-output(&$data);
+output($data);
+outputSample($data);
 
 
 function parserExecl(&$reader,&$data,$path,$filename)
@@ -79,19 +78,16 @@ function parserExecl(&$reader,&$data,$path,$filename)
 			$total_people =  intval($currentSheet->getCell("M{$excel_line}")->getValue());	
 			$total_rate =  floatval($currentSheet->getCell("N{$excel_line}")->getValue());	
 			$data['投票狀況'][$county][$city][$village][] = array(
-					'票所'=>$vote_no,
-					'得票數'=>$vote_num,
-					'得票率'=>$vote_rate,
-					'有效票'=>$vaild_num,
-					'無效票'=>$invaild_num,
-					'投票'=>$total_num,
-					'已領未投投票'=>$no_vote,
-					'選舉人數'=>$total_people,
-					'投票率'=>$total_rate);
-			//print_r($data);
-			
-
-			}
+				'票所'=>$vote_no,
+				'得票數'=>$vote_num,
+				'得票率'=>$vote_rate,
+				'有效票'=>$vaild_num,
+				'無效票'=>$invaild_num,
+				'投票'=>$total_num,
+				'已領未投投票'=>$no_vote,
+				'選舉人數'=>$total_people,
+				'投票率'=>$total_rate);
+		}
 		
 	}
 
@@ -100,9 +96,52 @@ function parserExecl(&$reader,&$data,$path,$filename)
 	
 }
 
+function outputSample(&$data)
+{
+	
+	$sample = [];
+	$sample['候選人'] = $data['候選人'];
+	$i=0;
+	$j=0;
+	$k=0;
+	$u=0;
+	$size = 2;
+	foreach ($data['投票狀況'] as $county => $value) 
+	{
+		$i++;
+		$j=0;
+		if($i>1){
+			break;
+		}
+		foreach ($value as $town => $v2) 
+		{
+			$j++;
+			$k = 0;
+			if($j>1)
+			{
+				break;
+			}
+			foreach ($v2 as $village => $v3) 
+			{
+				$k++;
+				if($k>$size)
+				{
+					break;
+				}
+				$sample['投票狀況'][$county][$town][$village] = $data['投票狀況'][$county][$town][$village];
+			}
+			
+		}
+	}
+	$json = json_encode($sample,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+	$fp = fopen('../../13_president_sample.json','w+');
+	fprintf($fp,"%s",$json);
+	fclose($fp);	
+}
+
 function output(&$data)
 {
-	$json = json_encode($data);
+	$json = json_encode($data,JSON_UNESCAPED_UNICODE);
 	$fp = fopen('../../13_president.json','w+');
 	fprintf($fp,"%s",$json);
 	fclose($fp);
@@ -114,54 +153,7 @@ function getContry($filename)
 	$cols = explode(")",$cols[3]);	
 	return substr($cols[0], 1);
 }
-/**
-$filename = '../../raw/13th_president_vote.csv';
-$fp = fopen($filename,'r');
 
-
-$data = array();
-$data['候選人'][] = array('總統'=>'陳水扁','副總統'=>'呂秀蓮');
-$data['候選人'][] = array('總統'=>'連戰','副總統'=>'宋楚瑜');
-
-
-
-
-//Jump the first line
-fgets($fp);
-
-
-
-
-while(!feof($fp))
-{
-	$line = fgets($fp);
-	$cols = explode(",",$line);
-	$size = count($cols);
-	
-
-	//echo $line."\n";
-
-	$data['投票狀況'][$cols[0]][$cols[1]][$cols[2]][] = array(
-		'票所'=>$cols[3],
-		'得票數'=>array(intval($cols[4]),intval($cols[6])),
-		'得票率'=>array(floatval($cols[5]),floatval($cols[7])),
-		'有效票'=>intval($cols[8]),
-		'無效票'=>intval($cols[9]),
-		'投票'=>intval($cols[10]),
-		'已領未投投票'=>intval($cols[11]),
-		'選舉人數'=>intval($cols[12]),
-		'投票率'=>floatval($cols[13]));
-}
-
-$json = json_encode($data);
-
-fclose($fp);
-
-$fp = fopen('../../13_president.json','w+');
-fprintf($fp,"%s",$json);
-fclose($fp);
-
-*/
 
 
 
